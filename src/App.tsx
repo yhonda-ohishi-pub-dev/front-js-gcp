@@ -12,6 +12,7 @@ import {
   InviteAccept,
 } from "./pages";
 import { useAuthStore } from "./stores/authStore";
+import { useOrganizations } from "./hooks/useOrganizations";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore();
@@ -21,32 +22,40 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+// 組織取得を行うラッパーコンポーネント
+function OrganizationProvider({ children }: { children: React.ReactNode }) {
+  useOrganizations();
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/invite/:token" element={<InviteAccept />} />
+      <OrganizationProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/invite/:token" element={<InviteAccept />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="organizations" element={<Organizations />} />
-          <Route path="users" element={<Users />} />
-          <Route path="cars" element={<Cars />} />
-          <Route path="inspections" element={<Inspections />} />
-          <Route path="files" element={<Files />} />
-        </Route>
-      </Routes>
+          {/* Protected routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="organizations" element={<Organizations />} />
+            <Route path="users" element={<Users />} />
+            <Route path="cars" element={<Cars />} />
+            <Route path="inspections" element={<Inspections />} />
+            <Route path="files" element={<Files />} />
+          </Route>
+        </Routes>
+      </OrganizationProvider>
     </BrowserRouter>
   );
 }

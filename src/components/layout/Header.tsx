@@ -2,7 +2,14 @@ import { useAuthStore } from "../../stores/authStore";
 import { Link } from "react-router-dom";
 
 export function Header() {
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const {
+    isAuthenticated,
+    user,
+    logout,
+    organizations,
+    currentOrganizationId,
+    setCurrentOrganizationId,
+  } = useAuthStore();
 
   return (
     <header className="bg-white shadow">
@@ -14,6 +21,22 @@ export function Header() {
           <nav className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
+                {organizations.length > 0 && (
+                  <select
+                    value={currentOrganizationId || ""}
+                    onChange={(e) => setCurrentOrganizationId(e.target.value)}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  >
+                    {organizations.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name} ({org.role})
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {organizations.length === 0 && (
+                  <span className="text-sm text-gray-400">組織なし</span>
+                )}
                 <span className="text-sm text-gray-600">
                   {user?.displayName || "User"}
                 </span>

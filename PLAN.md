@@ -372,3 +372,21 @@ src/
 ### 7.5 実装タスク
 
 完了: 2025-12-07 → [docs/PLAN-EXECUTED.md](docs/PLAN-EXECUTED.md) に移動
+
+---
+
+## Phase 8: Organization切り替え機能
+
+### 8.1 概要
+
+ヘッダーに組織切り替えドロップダウンを追加し、選択した組織のコンテキストでAPI操作を行う。
+
+### 8.2 仕様
+
+- 上部メニュー（Header）に組織切り替えドロップダウンを表示
+- 選択した組織IDをlocalStorageに保存（リロード後も維持）
+- 各API呼び出しで自動的に`x-organization-id`ヘッダーを使用
+
+### 8.3 実装タスク
+
+完了: 2025-12-07 → [docs/PLAN-EXECUTED.md](docs/PLAN-EXECUTED.md) に移動
