@@ -30,9 +30,12 @@ npm run deploy   # Cloudflare Pages デプロイ
 ### ディレクトリ構造
 
 - `src/api/` - gRPC-Webクライアント設定と生成コード
+- `src/components/` - 共通コンポーネント (InviteModal等)
 - `src/components/layout/` - Header, Sidebar, MainLayout
+- `src/hooks/` - カスタムフック (useOrganizations)
 - `src/pages/` - ルートごとのページコンポーネント
 - `src/stores/` - Zustandストア (authStore)
+- `src/utils/` - ユーティリティ関数 (jwt.ts)
 
 ### 認証フロー
 
@@ -43,6 +46,26 @@ npm run deploy   # Cloudflare Pages デプロイ
 5. `ProtectedRoute` がトークン有無で認証チェック
 
 **トークン受信形式**: URLフラグメント (`#`) 経由 (セキュリティ上サーバーに送信されない)
+
+### トークンリフレッシュ
+
+- `useOrganizations` フックでトークン期限切れを自動検出
+- リフレッシュ成功時は新しいトークンでAPI再試行
+- リフレッシュ失敗時のみログアウト
+
+### 組織管理
+
+- `authStore` で `organizations`, `currentOrganizationId` を管理
+- `Header.tsx` に組織切り替えドロップダウン
+- `useOrganizations` フックで所属組織を自動取得
+- localStorageで選択組織を永続化
+- `x-organization-id` ヘッダーでAPI呼び出し時に組織を指定
+
+### 招待機能
+
+- `Organizations.tsx` - Invite/Resend/Cancel機能
+- `InviteAccept.tsx` - 招待トークン検証・承認フロー (`/invite/:token`)
+- `InviteModal.tsx` - 招待ダイアログ
 
 ### API通信
 
@@ -67,9 +90,23 @@ npm run proto  # buf generate を実行
 
 - `../postgres-prod` - Goバックエンド (gRPC + HTTP auth)
 
+## 主要ページ
+
+- `/login` - ログイン画面
+- `/auth/callback` - OAuth認証コールバック
+- `/dashboard` - ダッシュボード
+- `/organizations` - 組織管理・招待
+- `/users` - ユーザー管理
+- `/cars` - 車両管理
+- `/inspections` - 点検管理
+- `/files` - ファイル管理
+- `/invite/:token` - 招待承認
+
 ## 注意点
 
 - 認証コールバックはURLフラグメント `#access_token=xxx&refresh_token=xxx` でトークンを受信
 - Zustandのpersist middlewareでaccess_tokenのみlocalStorageに保存
 - refresh_tokenは `localStorage.setItem("refresh_token", ...)` で別途保存
 - TailwindはPostCSS経由で設定 (`@tailwindcss/postcss`)
+- 組織IDは `x-organization-id` ヘッダーでAPI呼び出し時に送信
+- JWTからユーザー情報を自動抽出 (`src/utils/jwt.ts`)

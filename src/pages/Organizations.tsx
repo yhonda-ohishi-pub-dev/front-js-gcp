@@ -15,7 +15,7 @@ export function Organizations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", slug: "" });
+  const [formData, setFormData] = useState({ name: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inviteModalOrg, setInviteModalOrg] = useState<Organization | null>(null);
   const [invitations, setInvitations] = useState<Record<string, Invitation[]>>({});
@@ -54,10 +54,9 @@ export function Organizations() {
       );
       await client.createOrganization({
         name: formData.name,
-        slug: formData.slug,
       });
       setIsModalOpen(false);
-      setFormData({ name: "", slug: "" });
+      setFormData({ name: "" });
       await fetchOrganizations();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create");
@@ -130,13 +129,8 @@ export function Organizations() {
     }
   };
 
-  // slugを自動生成
   const handleNameChange = (name: string) => {
-    const slug = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    setFormData({ name, slug });
+    setFormData({ name });
   };
 
   if (loading) {
@@ -285,31 +279,7 @@ export function Organizations() {
                 />
               </div>
 
-              <div className="mb-6">
-                <label
-                  htmlFor="slug"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Slug
-                </label>
-                <input
-                  type="text"
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="my-organization"
-                  required
-                  pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  URL-safe identifier (lowercase letters, numbers, hyphens)
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
