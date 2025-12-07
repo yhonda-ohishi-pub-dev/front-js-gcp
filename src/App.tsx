@@ -9,6 +9,7 @@ import {
   Cars,
   Inspections,
   Files,
+  InviteAccept,
 } from "./pages";
 import { useAuthStore } from "./stores/authStore";
 
@@ -27,6 +28,7 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/invite/:token" element={<InviteAccept />} />
 
         {/* Protected routes */}
         <Route

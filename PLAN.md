@@ -322,3 +322,53 @@ VITE_LINE_CHANNEL_ID=xxx
 # 既存の環境変数に加えて
 ALLOWED_ORIGINS=https://front-js.pages.dev
 ```
+
+---
+
+## Phase 7: 招待機能
+
+### 7.1 概要
+バックエンドの InvitationService API を使用して、組織への招待機能を実装する。
+
+### 7.2 InvitationService API
+
+| メソッド | 用途 |
+|----------|------|
+| CreateInvitation | 招待作成（email + role） |
+| GetInvitationByToken | トークンで招待取得 |
+| AcceptInvitation | 招待承認 |
+| CancelInvitation | 招待取消 |
+| ListInvitations | 組織の招待一覧 |
+| ResendInvitation | 再送（トークン再生成） |
+
+### 7.3 招待フロー
+
+```
+1. 管理者: Organizations → Invite Member
+   ↓
+2. モーダル: email入力 + role選択 → CreateInvitation
+   ↓
+3. バックエンド: invite URL生成 → URLをコピー/メール送信
+   ↓
+4. 招待ユーザー: /invite/{token} にアクセス
+   ↓
+5. 未認証 → /login (state: returnTo=/invite/{token})
+   ↓
+6. 認証後 → AcceptInvitation → ダッシュボードへ
+```
+
+### 7.4 必要なファイル
+
+```
+src/
+├── pages/
+│   ├── Organizations.tsx  # 拡張: 招待モーダル + 一覧
+│   └── InviteAccept.tsx   # 新規: 招待受諾ページ
+├── components/
+│   └── InviteModal.tsx    # 新規: 招待作成モーダル
+└── App.tsx                # ルート追加: /invite/:token
+```
+
+### 7.5 実装タスク
+
+完了: 2025-12-07 → [docs/PLAN-EXECUTED.md](docs/PLAN-EXECUTED.md) に移動
