@@ -85,7 +85,7 @@ export function Organizations() {
   const fetchInvitations = async (orgId: string) => {
     if (!token) return;
     try {
-      const client = createClient(InvitationService, createAuthTransport(token));
+      const client = createClient(InvitationService, createAuthTransport(token, orgId));
       const response = await client.listInvitations({ organizationId: orgId, status: "pending" });
       setInvitations((prev) => ({ ...prev, [orgId]: response.invitations }));
     } catch (err) {
@@ -95,7 +95,7 @@ export function Organizations() {
 
   const handleInvite = async (email: string, role: string): Promise<string | null> => {
     if (!token || !inviteModalOrg) return null;
-    const client = createClient(InvitationService, createAuthTransport(token));
+    const client = createClient(InvitationService, createAuthTransport(token, inviteModalOrg.id));
     const response = await client.createInvitation({
       organizationId: inviteModalOrg.id,
       email,
@@ -111,7 +111,7 @@ export function Organizations() {
   const handleCancelInvitation = async (orgId: string, invitationId: string) => {
     if (!token) return;
     try {
-      const client = createClient(InvitationService, createAuthTransport(token));
+      const client = createClient(InvitationService, createAuthTransport(token, orgId));
       await client.cancelInvitation({ id: invitationId });
       await fetchInvitations(orgId);
     } catch (err) {
@@ -122,7 +122,7 @@ export function Organizations() {
   const handleResendInvitation = async (orgId: string, invitationId: string) => {
     if (!token) return;
     try {
-      const client = createClient(InvitationService, createAuthTransport(token));
+      const client = createClient(InvitationService, createAuthTransport(token, orgId));
       await client.resendInvitation({ id: invitationId });
       await fetchInvitations(orgId);
     } catch (err) {
@@ -181,14 +181,17 @@ export function Organizations() {
                     </p>
                     <p className="text-sm text-gray-500">{org.slug}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <button
                       onClick={() => {
                         setInviteModalOrg(org);
                         fetchInvitations(org.id);
                       }}
-                      className="text-sm text-green-600 hover:text-green-800"
+                      className="px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 flex items-center gap-1"
                     >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
                       Invite
                     </button>
                     <button className="text-sm text-blue-600 hover:text-blue-800">
