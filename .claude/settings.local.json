@@ -36,7 +36,8 @@
       "Bash(npm install:*)",
       "Bash(npx tailwindcss:*)",
       "Bash(where:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(wrangler deploy:*)"
     ],
     "deny": [],
     "ask": []
