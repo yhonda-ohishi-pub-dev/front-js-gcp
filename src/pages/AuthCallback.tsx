@@ -23,17 +23,10 @@ export function AuthCallback() {
     }
 
     if (accessToken) {
-      // TODO: Decode JWT to get user info or fetch from API
-      // For now, just set the token
-      login(accessToken, {
-        id: "",
-        displayName: "User",
-        isSuperadmin: false,
-        createdAt: undefined,
-        updatedAt: undefined,
-      } as any);
+      // JWTからユーザー情報を抽出してログイン
+      login(accessToken);
 
-      // Optionally store refresh token separately
+      // refresh_tokenをlocalStorageに保存
       if (refreshToken) {
         localStorage.setItem("refresh_token", refreshToken);
       }
