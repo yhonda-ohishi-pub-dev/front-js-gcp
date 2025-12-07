@@ -1,0 +1,6 @@
+name = "front-js"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "./dist"
+
+# Production environment variables are set in Cloudflare dashboard
+# or via wrangler pages deploy --var KEY=VALUE

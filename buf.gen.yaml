@@ -1,0 +1,8 @@
+version: v2
+plugins:
+  - remote: buf.build/bufbuild/es
+    out: src/api/generated
+    opt:
+      - target=ts
+inputs:
+  - directory: ../postgres-prod/proto
