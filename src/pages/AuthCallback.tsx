@@ -1,37 +1,48 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
 export function AuthCallback() {
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { login } = useAuthStore();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const errorParam = searchParams.get("error");
+    // URLフラグメント (#access_token=xxx&refresh_token=xxx) からトークンを取得
+    const hash = location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
+    const errorParam = params.get("error");
 
     if (errorParam) {
       setError(errorParam);
       return;
     }
 
-    if (token) {
+    if (accessToken) {
       // TODO: Decode JWT to get user info or fetch from API
       // For now, just set the token
-      login(token, {
+      login(accessToken, {
         id: "",
         displayName: "User",
         isSuperadmin: false,
         createdAt: undefined,
         updatedAt: undefined,
       } as any);
+
+      // Optionally store refresh token separately
+      if (refreshToken) {
+        localStorage.setItem("refresh_token", refreshToken);
+      }
+
       navigate("/");
     } else {
       setError("No token received");
     }
-  }, [searchParams, login, navigate]);
+  }, [location.hash, login, navigate]);
 
   if (error) {
     return (
