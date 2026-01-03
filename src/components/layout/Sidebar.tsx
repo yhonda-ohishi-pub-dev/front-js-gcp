@@ -7,6 +7,7 @@ const navigation = [
   { name: "Cars", href: "/cars" },
   { name: "Inspections", href: "/inspections" },
   { name: "Files", href: "/files" },
+  { name: "Reflection", href: "/reflection" },
 ];
 
 export function Sidebar() {

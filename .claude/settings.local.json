@@ -37,7 +37,8 @@
       "Bash(npx tailwindcss:*)",
       "Bash(where:*)",
       "Bash(npm run build:*)",
-      "Bash(wrangler deploy:*)"
+      "Bash(wrangler deploy:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

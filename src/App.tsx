@@ -10,6 +10,7 @@ import {
   Inspections,
   Files,
   InviteAccept,
+  Reflection,
 } from "./pages";
 import { useAuthStore } from "./stores/authStore";
 import { useOrganizations } from "./hooks/useOrganizations";
@@ -65,6 +66,7 @@ function App() {
             <Route path="cars" element={<Cars />} />
             <Route path="inspections" element={<Inspections />} />
             <Route path="files" element={<Files />} />
+            <Route path="reflection" element={<Reflection />} />
           </Route>
         </Routes>
       </AuthProvider>
