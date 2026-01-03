@@ -13,6 +13,7 @@ import {
 } from "./pages";
 import { useAuthStore } from "./stores/authStore";
 import { useOrganizations } from "./hooks/useOrganizations";
+import { useAutoRefresh } from "./hooks/useAutoRefresh";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore();
@@ -22,16 +23,27 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-// 組織取得を行うラッパーコンポーネント
-function OrganizationProvider({ children }: { children: React.ReactNode }) {
+// 認証状態の初期化と組織取得を行うラッパーコンポーネント
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { isReady } = useAutoRefresh();
   useOrganizations();
+
+  // トークンリフレッシュ完了まで待機
+  if (!isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
   return <>{children}</>;
 }
 
 function App() {
   return (
     <BrowserRouter>
-      <OrganizationProvider>
+      <AuthProvider>
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
@@ -55,7 +67,7 @@ function App() {
             <Route path="files" element={<Files />} />
           </Route>
         </Routes>
-      </OrganizationProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
